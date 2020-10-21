@@ -14,3 +14,5 @@ O.*/
 *~
 *.swp
 *.dll
+# SLAC changes
+RELEASE_SITE
