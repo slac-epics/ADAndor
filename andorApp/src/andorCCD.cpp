@@ -118,7 +118,7 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int cameraSeri
   : ADDriver(portName, 1, 0, maxBuffers, maxMemory, 
              asynEnumMask, asynEnumMask,
              ASYN_CANBLOCK, 1, priority, stackSize),
-    mExiting(false), mExited(0), mShamrockId(shamrockID), mMultiTrack(this), mSPEDoc(0), mInitOK(false)
+    mExiting(false), mExited(0), mShamrockId(shamrockID), mSPEDoc(0), mInitOK(false)
 {
 
   int status = asynSuccess;
@@ -883,62 +883,6 @@ asynStatus AndorCCD::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     return status;
 }
 
-/* Called if tracks acquisition mode is being used.
-   Sets up the track defintion. */
-void AndorCCD::setupTrackDefn(int minX, int sizeX, int binX)
-{
-    static const char *functionName = "setupTrackDefn";
-    if (mMultiTrack.size() == 0)
-    {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
-            "%s:%s: A track defintion must be set to use tracks mode\n",
-            driverName, functionName);
-        return;
-    }
-
-    static const int ValuesPerTrack = 6;
-    std::vector<int> TrackDefn(mMultiTrack.size() * 6);
-    setIntegerParam(NDArraySizeY, mMultiTrack.DataHeight());
-    for (size_t TrackNo = 0; TrackNo < mMultiTrack.size(); TrackNo++)
-    {
-        /*
-        Each track must be defined by a group of six integers.
-            - The top and bottom positions of the tracks.
-            - The left and right positions for the area of interest within each track
-            - The horizontal and vertical binning for each track. */
-        TrackDefn[TrackNo * 6 + 0] = mMultiTrack.TrackStart(TrackNo);
-        TrackDefn[TrackNo * 6 + 1] = mMultiTrack.TrackEnd(TrackNo);
-        TrackDefn[TrackNo * 6 + 2] = minX + 1;
-        TrackDefn[TrackNo * 6 + 3] = minX + sizeX;
-        TrackDefn[TrackNo * 6 + 4] = binX;
-        TrackDefn[TrackNo * 6 + 5] = mMultiTrack.TrackBin(TrackNo);
-    }
-    checkStatus(SetCustomTrackHBin(binX));
-    checkStatus(SetComplexImage(int(TrackDefn.size() / ValuesPerTrack), &TrackDefn[0]));
-}
-
-/* Called to set tracks definition parameters.
-   Sets up the track defintion. */
-asynStatus AndorCCD::writeInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements)
-{
-    static const char *functionName = "writeInt32Array";
-    asynStatus status = asynSuccess;
-    try {
-        status = mMultiTrack.writeInt32Array(pasynUser, value, nElements);
-        if (status != asynError)
-            setupAcquisition();
-        else
-            status = ADDriver::writeInt32Array(pasynUser, value, nElements);
-    }
-    catch (const std::string &e) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-        "%s:%s: %s\n",
-        driverName, functionName, e.c_str());
-        status = asynError;
-    }
-    return status;
-}
-
 /** Controls shutter
  * @param[in] command 0=close, 1=open, -1=no change, only set other parameters */
 asynStatus AndorCCD::setupShutter(int command)
@@ -1309,9 +1253,7 @@ asynStatus AndorCCD::setupAcquisition()
   // Unfortunately there does not seem to be a way to query the Andor SDK 
   // for the actual size of the image, so we must compute it.
   setIntegerParam(NDArraySizeX, sizeX/binX);
-  if (readOutMode != ARRandomTrack)
-      // The data height dimension is set by setupTrackDefn for multi-track mode.
-    setIntegerParam(NDArraySizeY, sizeY/binY);
+  setIntegerParam(NDArraySizeY, sizeY/binY);
 
   getIntegerParam(AndorFrameTransferMode, &frameTransferMode);
 
@@ -1324,8 +1266,6 @@ asynStatus AndorCCD::setupAcquisition()
       "%s:%s:, SetReadMode(%d)\n",
       driverName, functionName, readOutMode);
     checkStatus(SetReadMode(readOutMode));
-    if (readOutMode == ARRandomTrack)
-        setupTrackDefn(minX, sizeX, binX);
 
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
       "%s:%s:, SetTriggerMode(%d)\n", 
@@ -1612,8 +1552,6 @@ void AndorCCD::dataTask(void)
             dims[0] = sizeX;
             dims[1] = sizeY;
             pArray = this->pNDArrayPool->alloc(nDims, dims, dataType, 0, NULL);
-            if (readOutMode == ARRandomTrack)
-                mMultiTrack.storeTrackAttributes(pArray->pAttributeList);
             // Read the oldest array
             // Is there still an image available?
             status = GetNumberNewImages(&firstImage, &lastImage);

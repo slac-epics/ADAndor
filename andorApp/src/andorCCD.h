@@ -14,7 +14,6 @@
 #define ANDORCCD_H
 
 #include <libxml/parser.h>
-#include <CCDMultiTrack.h>
 
 #include "ADDriver.h"
 #include "SPEHeader.h"
@@ -89,7 +88,6 @@ class AndorCCD : public ADDriver {
   /* These are the methods that we override from ADDriver */
   virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
   virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
-  virtual asynStatus writeInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements);
   virtual void report(FILE *fp, int details);
   virtual asynStatus readEnum(asynUser *pasynUser, char *strings[], int values[], int severities[],
                               size_t nElements, size_t *nIn);
@@ -126,7 +124,6 @@ class AndorCCD : public ADDriver {
   asynStatus setupShutter(int command);
   void saveDataFrame(int frameNumber);
   void setupADCSpeeds();
-  void setupTrackDefn(int minX, int sizeX, int binX);
   void setupPreAmpGains();
   void setupVerticalShiftPeriods();
   unsigned int SaveAsSPE(char *fullFileName);
@@ -235,8 +232,6 @@ class AndorCCD : public ADDriver {
 
   // AndorCapabilities structure
   AndorCapabilities mCapabilities;
-
-  CCDMultiTrack mMultiTrack;
 
   // EM Gain parameters 
   int mEmGainRangeLow;
