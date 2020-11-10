@@ -4,7 +4,6 @@
 
 include "ADBase.template"
 include "NDFile.template"
-include "CCDMultiTrack.template"
 
 # These are the records that we modify from NDFile.template
 record(mbbo, "$(P)$(R)FileFormat")

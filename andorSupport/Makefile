@@ -27,6 +27,18 @@ LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so
 LIB_INSTALLS_Linux += ../os/linux-x86_64/libshamrockcif.so.2
 LIB_INSTALLS_Linux += ../os/linux-x86_64/libshamrockcif.so
 
+else ifeq (rhel6-x86_64, $(findstring rhel6-x86_64, $(T_A)))
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so.2
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libshamrockcif.so.2
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libshamrockcif.so
+
+else ifeq (rhel7-x86_64, $(findstring rhel7-x86_64, $(T_A)))
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so.2
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libshamrockcif.so.2
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libshamrockcif.so
+
 else ifeq (linux-x86, $(findstring linux-x86, $(T_A)))
 LIB_INSTALLS_Linux += ../os/linux-x86/libandor.so.2
 LIB_INSTALLS_Linux += ../os/linux-x86/libandor.so
