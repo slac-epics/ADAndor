@@ -202,7 +202,7 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int cameraSeri
       at_32 cameraHandle = -1;
       checkStatus(GetCameraHandle(i, &cameraHandle));
       checkStatus(SetCurrentCamera(cameraHandle));
-      printf("%s:%s: initializing camera with handle %d\n", driverName, functionName, cameraHandle);
+      printf("%s:%s: initializing camera with handle %d, installDir: %s\n", driverName, functionName, cameraHandle, mInstallPath);
       unsigned long error = Initialize(mInstallPath);
       if (error == DRV_NOT_AVAILABLE) {
         // Is this the right way to detect if camera is used/busy/claimed?
