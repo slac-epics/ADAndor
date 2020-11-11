@@ -1,0 +1,28 @@
+# Macros:
+#% macro, P, Device Prefix
+#% macro, R, Device Suffix
+
+record( stringin, "$(P)$(R)CamModel" )
+{
+	field( VAL,   "NewtonD0920P-BR-DD" )
+	field( PINI,  "YES" )
+}
+
+record( stringin, "$(P)$(R)CamModelScreen" )
+{
+	field( VAL,   "andorScreens/AndorFeatures.edl" )
+	field( PINI,  "YES" )
+}
+
+record( stringin, "$(P)$(R)CamType" )
+{
+	field( VAL,   "Andor" )
+	field( PINI,  "YES" )
+}
+
+record( stringin, "$(P)$(R)CamTypeScreen" )
+{
+	field( VAL,   "andorScreens/AndorCamType.edl" )
+	field( PINI,  "YES" )
+}
+
