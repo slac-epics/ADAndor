@@ -1272,6 +1272,13 @@ asynStatus AndorCCD::setupAcquisition()
       driverName, functionName, triggerMode);
     checkStatus(SetTriggerMode(triggerMode));
 
+    // Enable fast external triggering
+    // Only has effect if triggerMode is set to External.
+    // If fast triggering is not enabled, the Andor will
+    // not accept another trigger until it's "Keep Clean" cycle
+    // has been completed.
+    checkStatus(SetFastExtTrigger(1));
+
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
       "%s:%s:, SetADChannel(%d)\n", 
       driverName, functionName, pSpeed->ADCIndex);
