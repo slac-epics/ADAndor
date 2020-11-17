@@ -12,6 +12,7 @@ include $(TOP)/configure/CONFIG
 # databases, templates, substitutions like this
 
 DB += andorCCD.template
+DB += andorXmitDelay.template
 DB += shamrock.template
 
 REQ += andorCCD_settings.req
