@@ -154,6 +154,7 @@ record(bo, "$(P)$(R)AndorCooler")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_COOLER")
     field(ZNAM, "Off")
     field(ONAM, "On")
+    info( autosaveFields, "VAL" )
 }
 
 record(bi, "$(P)$(R)AndorCooler_RBV")
@@ -173,7 +174,7 @@ record(ao, "$(P)$(R)AndorAccumulatePeriod")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ACCUMULATE_PERIOD")
    field(PREC, "3")
    field(VAL,  "0.1")
-   
+   info( autosaveFields, "VAL" )
 }
 
 record(ai, "$(P)$(R)AndorAccumulatePeriod_RBV")
@@ -219,6 +220,7 @@ record(mbbo, "$(P)$(R)AndorShutterMode")
     field(THVL, "4")
     field(FRST, "Open for Any")
     field(FRVL, "5")
+    info( autosaveFields, "VAL" )
 }
 
 record(bo, "$(P)$(R)AndorShutterExTTL")
@@ -229,6 +231,7 @@ record(bo, "$(P)$(R)AndorShutterExTTL")
     field(ZNAM, "Low To Open")
     field(ONAM, "High To Open")
     field(RVAL, "1")
+    info( autosaveFields, "VAL" )
 }
 
 
@@ -240,6 +243,7 @@ record(waveform, "$(P)$(R)PALFilePath")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_PAL_FILE_PATH")
     field(FTVL, "CHAR")
     field(NELM, "256")
+    info( autosaveFields, "VAL" )
 }
 
 record(waveform, "$(P)$(R)PALFilePath_RBV")
@@ -257,6 +261,7 @@ record(mbbo, "$(P)$(R)AndorADCSpeed")
     field(PINI, "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ADC_SPEED")
+    info( autosaveFields, "VAL" )
 }
 
 record(mbbi, "$(P)$(R)AndorADCSpeed_RBV")
@@ -272,6 +277,7 @@ record(mbbo, "$(P)$(R)AndorPreAmpGain")
     field(PINI, "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_PREAMP_GAIN")
+    info( autosaveFields, "VAL" )
 }
 
 record(mbbi, "$(P)$(R)AndorPreAmpGain_RBV")
@@ -287,6 +293,7 @@ record(bo, "$(P)$(R)AndorBaselineClamp")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_BASELINE_CLAMP")
     field(ZNAM, "Disable")
     field(ONAM, "Enable")
+    info( autosaveFields, "VAL" )
 }
 
 record(bi, "$(P)$(R)AndorBaselineClamp_RBV")
@@ -305,6 +312,7 @@ record(longout, "$(P)$(R)AndorEMGain")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_EM_GAIN")
    field(VAL,  "0")
+   info( autosaveFields, "VAL" )
 }
 
 record(longin, "$(P)$(R)AndorEMGain_RBV")
@@ -328,6 +336,7 @@ record(mbbo, "$(P)$(R)AndorEMGainMode")
     field(THST, "Real EM Gain")
     field(THVL, "3")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_EM_GAIN_MODE")
+    info( autosaveFields, "VAL" )
 }
 
 record(mbbi, "$(P)$(R)AndorEMGainMode_RBV")
@@ -353,6 +362,7 @@ record(bo, "$(P)$(R)AndorEMGainAdvanced")
     field(ZNAM, "Disabled")
     field(ONAM, "Enabled")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_EM_GAIN_ADVANCED")
+    info( autosaveFields, "VAL" )
 }
 
 record(bi, "$(P)$(R)AndorEMGainAdvanced_RBV")
@@ -376,6 +386,7 @@ record(mbbo, "$(P)$(R)AndorReadOutMode")
    field(TWST, "Random Track")
    field(TWVL, "2")
    field(VAL,  "4")
+   info( autosaveFields, "VAL" )
 }
 
 record(mbbi, "$(P)$(R)AndorReadOutMode_RBV")
@@ -399,6 +410,7 @@ record(bo, "$(P)$(R)AndorFTMode")
     field(ZNAM, "Disabled")
     field(ONAM, "Enabled")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FT_MODE")
+    info( autosaveFields, "VAL" )
 }
 
 record(bi, "$(P)$(R)AndorFTMode_RBV")
@@ -416,6 +428,7 @@ record(mbbo, "$(P)$(R)AndorVSPeriod")
     field(PINI, "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_VS_PERIOD")
+    info( autosaveFields, "VAL" )
 }
 
 record(mbbi, "$(P)$(R)AndorVSPeriod_RBV")
@@ -441,6 +454,7 @@ record(mbbo, "$(P)$(R)AndorVSAmplitude")
    field(FRVL, "4")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_VS_AMPLITUDE")
    field(VAL,  "0")
+   info( autosaveFields, "VAL" )
 }
 
 record(mbbi, "$(P)$(R)AndorVSAmplitude_RBV")
