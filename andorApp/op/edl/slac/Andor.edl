@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 1327
-y 74
+x 677
+y 54
 w 1070
 h 850
 font "helvetica-medium-r-18.0"
@@ -484,9 +484,9 @@ major 4
 minor 0
 release 0
 x 360
-y 255
-w 350
-h 550
+y 256
+w 352
+h 552
 lineColor index 14
 fillColor index 14
 lineWidth 0
@@ -588,7 +588,7 @@ format "decimal"
 font "helvetica-medium-r-14.0"
 fgColor index 15
 bgColor index 12
-limitsFromDb
+precision 5
 nullColor index 40
 smartRefresh
 fastUpdate
@@ -826,7 +826,7 @@ minor 1
 release 1
 x 364
 y 480
-w 120
+w 100
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "right"
@@ -898,7 +898,7 @@ format "decimal"
 font "helvetica-medium-r-14.0"
 fgColor index 15
 bgColor index 12
-limitsFromDb
+precision 5
 nullColor index 40
 smartRefresh
 fastUpdate
@@ -966,7 +966,7 @@ format "decimal"
 font "helvetica-medium-r-14.0"
 fgColor index 15
 bgColor index 12
-limitsFromDb
+precision 5
 nullColor index 40
 smartRefresh
 fastUpdate
@@ -1047,7 +1047,7 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 385
+x 364
 y 455
 w 100
 h 20
@@ -1067,10 +1067,10 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 615
-y 457
-w 90
-h 18
+x 592
+y 456
+w 116
+h 20
 controlPv "$(P)$(R)ImageMode_RBV"
 format "string"
 font "helvetica-medium-r-14.0"
@@ -1090,9 +1090,9 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 365
+x 364
 y 505
-w 120
+w 100
 h 20
 font "helvetica-medium-r-14.0"
 fontAlign "right"
@@ -1110,10 +1110,10 @@ beginObjectProperties
 major 4
 minor 7
 release 0
-x 615
-y 507
-w 90
-h 18
+x 592
+y 508
+w 116
+h 20
 controlPv "$(P)$(R)AndorReadOutMode_RBV"
 format "string"
 font "helvetica-medium-r-14.0"
@@ -1751,17 +1751,17 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 493
+x 468
 y 480
-w 140
+w 120
 h 20
 fgColor index 14
 bgColor index 63
-inconsistentColor index 12
+inconsistentColor index 40
 topShadowColor index 2
 botShadowColor index 12
 controlPv "$(P)$(R)TriggerMode"
-indicatorPv "$(P)$(R)TriggerMode"
+indicatorPv "$(P)$(R)TriggerMode_RBV"
 font "helvetica-medium-r-12.0"
 endObjectProperties
 
@@ -1819,9 +1819,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 494
-y 455
-w 115
+x 468
+y 456
+w 120
 h 20
 fgColor index 14
 bgColor index 63
@@ -1839,9 +1839,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 494
-y 505
-w 115
+x 468
+y 504
+w 120
 h 20
 fgColor index 14
 bgColor index 63
@@ -3478,5 +3478,28 @@ setPosition {
 replaceSymbols {
   0 1
 }
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 592
+y 480
+w 116
+h 20
+controlPv "$(P)$(R)TriggerMode_RBV"
+format "string"
+font "helvetica-medium-r-14.0"
+fgColor index 15
+bgColor index 12
+limitsFromDb
+nullColor index 40
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
 endObjectProperties
 
