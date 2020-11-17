@@ -1452,6 +1452,7 @@ void AndorCCD::dataTask(void)
 {
   epicsUInt32 status = 0;
   int acquireStatus;
+  int bitsPerPixel = 16;
   char *errorString = NULL;
   int acquiring = 0;
   epicsInt32 numImagesCounter;
@@ -1565,6 +1566,8 @@ void AndorCCD::dataTask(void)
               checkStatus(GetImages(i, i, (at_32*)pArray->pData, 
                                     sizeX*sizeY, &validFirst, &validLast));
               setIntegerParam(NDArraySize, sizeX * sizeY * sizeof(epicsUInt32));
+              bitsPerPixel = 32;
+
             }
             else if (dataType == NDUInt16) {
               asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
@@ -1573,11 +1576,16 @@ void AndorCCD::dataTask(void)
               checkStatus(GetImages16(i, i, (epicsUInt16*)pArray->pData, 
                                       sizeX*sizeY, &validFirst, &validLast));
               setIntegerParam(NDArraySize, sizeX * sizeY * sizeof(epicsUInt16));
+              bitsPerPixel = 16;
             }
             /* Put the frame number and time stamp into the buffer */
             pArray->uniqueId = imageCounter;
             pArray->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
             updateTimeStamp(&pArray->epicsTS);
+            pArray->uniqueId  = pArray->epicsTS.nsec & 0x1FFFF; // SLAC
+#ifdef NDBitsPerPixelString
+            setIntegerParam( NDBitsPerPixel,  bitsPerPixel  );
+#endif
             /* Get any attributes that have been defined for this driver */        
             this->getAttributes(pArray->pAttributeList);
             /* Call the NDArray callback */
