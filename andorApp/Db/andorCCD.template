@@ -529,6 +529,42 @@ record(bi, "$(P)$(R)AndorKeepClean_RBV")
     field(SCAN, "I/O Intr")
 }
 
+# DMA settings
+record(longout, "$(P)$(R)AndorMaxImagesPerDMA")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_DMA_IMAGES")
+   field(VAL,  "")
+   info( autosaveFields, "VAL" )
+}
+
+record(longin, "$(P)$(R)AndorMaxImagesPerDMA_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_DMA_IMAGES")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)AndorSecondsPerDMA")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_DMA_SECONDS")
+   field(PREC, "3")
+   field(VAL,  "0.03")
+   info( autosaveFields, "VAL" )
+}
+
+record(ai, "$(P)$(R)AndorSecondsPerDMA_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_DMA_SECONDS")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+
 #Records in ADBase that do not apply to Andor
 
 record(mbbo, "$(P)$(R)ColorMode")

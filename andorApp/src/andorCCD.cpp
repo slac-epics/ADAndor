@@ -162,6 +162,8 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int cameraSeri
   createParam(AndorVerticalShiftAmplitudeString,  asynParamInt32, &AndorVerticalShiftAmplitude);
   createParam(AndorFastExtTriggerString,          asynParamInt32, &AndorFastExtTrigger);
   createParam(AndorKeepCleanString,               asynParamInt32, &AndorKeepClean);
+  createParam(AndorMaxImagesPerDMAString,         asynParamInt32, &AndorMaxImagesPerDMA);
+  createParam(AndorSecondsPerDMAString,           asynParamFloat64, &AndorSecondsPerDMA);
 
 
   // Create the epicsEvent for signaling to the status task when parameters should have changed.
@@ -318,6 +320,8 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int cameraSeri
   status |= setIntegerParam(AndorFrameTransferMode, 0);
   status |= setIntegerParam(AndorFastExtTrigger, 0);
   status |= setIntegerParam(AndorKeepClean, 1);
+  status |= setIntegerParam(AndorMaxImagesPerDMA, 0);
+  status |= setDoubleParam(AndorSecondsPerDMA, 0.03);
 
   setupADCSpeeds();
   setupPreAmpGains();
@@ -734,7 +738,8 @@ asynStatus AndorCCD::writeInt32(asynUser *pasynUser, epicsInt32 value)
              (function == AndorAdcSpeed)    || (function == AndorPreAmpGain)        ||
              (function == AndorReadOutMode) || (function == AndorFrameTransferMode) ||
              (function == AndorKeepClean)   || (function == AndorFastExtTrigger)    ||
-             (function == AndorVerticalShiftPeriod) || (function == AndorVerticalShiftAmplitude)) {
+             (function == AndorVerticalShiftPeriod) || (function == AndorVerticalShiftAmplitude) ||
+             (function == AndorMaxImagesPerDMA)) {
       status = setupAcquisition();
       if (function == AndorAdcSpeed) setupPreAmpGains();
       if (status != asynSuccess) setIntegerParam(function, oldValue);
@@ -875,6 +880,9 @@ asynStatus AndorCCD::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     else if ((function == ADShutterOpenDelay) ||
              (function == ADShutterCloseDelay)) {             
       status = setupShutter(-1);
+    }
+    else if (function == AndorSecondsPerDMA) {
+      status = setupAcquisition();
     }
     else {
       status = ADDriver::writeFloat64(pasynUser, value);
@@ -1183,6 +1191,8 @@ asynStatus AndorCCD::setupAcquisition()
   int frameTransferMode;
   int verticalShiftPeriod;
   int verticalShiftAmplitude;
+  int maxImagesPerDMA;
+  double secondsPerDMA;
   static const char *functionName = "setupAcquisition";
   
   if (!mInitOK) {
@@ -1280,6 +1290,10 @@ asynStatus AndorCCD::setupAcquisition()
   getIntegerParam(AndorVerticalShiftPeriod, &verticalShiftPeriod);
 
   getIntegerParam(AndorVerticalShiftAmplitude, &verticalShiftAmplitude);
+
+  getIntegerParam(AndorMaxImagesPerDMA, &maxImagesPerDMA);
+
+  getDoubleParam(AndorSecondsPerDMA, &secondsPerDMA);
 
   try {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
@@ -1483,7 +1497,13 @@ asynStatus AndorCCD::setupAcquisition()
               driverName, functionName, keepCleanTime);
     setDoubleParam(AndorKeepCleanTime, keepCleanTime);
 
-    checkStatus(SetDMAParameters(1, 0.001));
+    // Set the DMA parameters
+    checkStatus(SetDMAParameters(maxImagesPerDMA, secondsPerDMA));
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+              "%s:%s:, SetDMAParameters(maxImagesPerDMA=%d, secondsPerDMA=%f)\n",
+              driverName, functionName, maxImagesPerDMA, secondsPerDMA);
+    setIntegerParam(AndorMaxImagesPerDMA, maxImagesPerDMA);
+    setDoubleParam(AndorSecondsPerDMA, secondsPerDMA);
   } catch (const std::string &e) {
     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
       "%s:%s: %s\n",

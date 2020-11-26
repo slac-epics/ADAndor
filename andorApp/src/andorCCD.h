@@ -44,6 +44,8 @@
 #define AndorVerticalShiftAmplitudeString  "ANDOR_VS_AMPLITUDE"
 #define AndorFastExtTriggerString          "ANDOR_FAST_EXT_TRIGGER"
 #define AndorKeepCleanString               "ANDOR_KEEP_CLEAN"
+#define AndorMaxImagesPerDMAString         "ANDOR_DMA_IMAGES"
+#define AndorSecondsPerDMAString           "ANDOR_DMA_SECONDS"
 
 /**
  * Structure defining an ADC speed for the ADAndor driver.
@@ -123,6 +125,8 @@ class AndorCCD : public ADDriver {
   int AndorVerticalShiftAmplitude;
   int AndorFastExtTrigger;
   int AndorKeepClean;
+  int AndorMaxImagesPerDMA;
+  int AndorSecondsPerDMA;
 #define LAST_ANDOR_PARAM AndorVerticalShiftAmplitude
 
  private:

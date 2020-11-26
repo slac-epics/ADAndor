@@ -14,5 +14,7 @@ $(P)$(R)AndorVSPeriod
 $(P)$(R)AndorVSAmplitude
 $(P)$(R)AndorFastExtTrigger
 $(P)$(R)AndorKeepClean
+$(P)$(R)AndorMaxImagesPerDMA
+$(P)$(R)AndorSecondsPerDMA
 file "ADBase_settings.req", P=$(P), R=$(R)
 file "NDFile_settings.req", P=$(P), R=$(R)
