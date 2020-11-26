@@ -402,6 +402,22 @@ record(mbbi, "$(P)$(R)AndorReadOutMode_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(ai, "$(P)$(R)AndorReadOutTime_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_READOUT_TIME")
+   field(PREC, "5")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)AndorKeepCleanTime_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_KEEP_CLEAN_TIME")
+   field(PREC, "5")
+   field(SCAN, "I/O Intr")
+}
+
 # Frame Transfer Mode
 record(bo, "$(P)$(R)AndorFTMode")
 {
@@ -473,6 +489,46 @@ record(mbbi, "$(P)$(R)AndorVSAmplitude_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_VS_AMPLITUDE")
    field(SCAN, "I/O Intr")
 }
+
+# Special triggering and cleaning related records
+record(bo, "$(P)$(R)AndorFastExtTrigger")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FAST_EXT_TRIGGER")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    info( autosaveFields, "VAL" )
+}
+
+record(bi, "$(P)$(R)AndorFastExtTrigger_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FAST_EXT_TRIGGER")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)AndorKeepClean")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_KEEP_CLEAN")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    info( autosaveFields, "VAL" )
+}
+
+record(bi, "$(P)$(R)AndorKeepClean_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_KEEP_CLEAN")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(SCAN, "I/O Intr")
+}
+
 #Records in ADBase that do not apply to Andor
 
 record(mbbo, "$(P)$(R)ColorMode")

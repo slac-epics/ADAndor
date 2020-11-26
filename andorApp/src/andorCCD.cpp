@@ -155,9 +155,13 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int cameraSeri
   createParam(AndorAdcSpeedString,                asynParamInt32, &AndorAdcSpeed);
   createParam(AndorBaselineClampString,           asynParamInt32, &AndorBaselineClamp);
   createParam(AndorReadOutModeString,             asynParamInt32, &AndorReadOutMode);
+  createParam(AndorReadOutTimeString,             asynParamFloat64, &AndorReadOutTime);
+  createParam(AndorKeepCleanTimeString,           asynParamFloat64, &AndorKeepCleanTime);
   createParam(AndorFrameTransferModeString,       asynParamInt32, &AndorFrameTransferMode);
   createParam(AndorVerticalShiftPeriodString,     asynParamInt32, &AndorVerticalShiftPeriod);
   createParam(AndorVerticalShiftAmplitudeString,  asynParamInt32, &AndorVerticalShiftAmplitude);
+  createParam(AndorFastExtTriggerString,          asynParamInt32, &AndorFastExtTrigger);
+  createParam(AndorKeepCleanString,               asynParamInt32, &AndorKeepClean);
 
 
   // Create the epicsEvent for signaling to the status task when parameters should have changed.
@@ -312,6 +316,8 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int cameraSeri
   status |= setDoubleParam(ADShutterCloseDelay, 0.);
   status |= setIntegerParam(AndorReadOutMode, ARImage);
   status |= setIntegerParam(AndorFrameTransferMode, 0);
+  status |= setIntegerParam(AndorFastExtTrigger, 0);
+  status |= setIntegerParam(AndorKeepClean, 1);
 
   setupADCSpeeds();
   setupPreAmpGains();
@@ -319,6 +325,13 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int cameraSeri
   status |= setIntegerParam(AndorVerticalShiftPeriod, mVSIndex);
   status |= setIntegerParam(AndorVerticalShiftAmplitude, 0);
   status |= setupShutter(-1);
+
+  float readOutTime;
+  checkStatus(GetReadOutTime(&readOutTime));
+  status |= setDoubleParam(AndorReadOutTime, readOutTime);
+  float keepCleanTime;
+  checkStatus(GetKeepCleanTime(&keepCleanTime));
+  status |= setDoubleParam(AndorKeepCleanTime, keepCleanTime);
 
   callParamCallbacks();
 
@@ -720,6 +733,7 @@ asynStatus AndorCCD::writeInt32(asynUser *pasynUser, epicsInt32 value)
              (function == AndorEmGainMode)  || (function == AndorEmGainAdvanced)    ||
              (function == AndorAdcSpeed)    || (function == AndorPreAmpGain)        ||
              (function == AndorReadOutMode) || (function == AndorFrameTransferMode) ||
+             (function == AndorKeepClean)   || (function == AndorFastExtTrigger)    ||
              (function == AndorVerticalShiftPeriod) || (function == AndorVerticalShiftAmplitude)) {
       status = setupAcquisition();
       if (function == AndorAdcSpeed) setupPreAmpGains();
@@ -1153,9 +1167,12 @@ asynStatus AndorCCD::setupAcquisition()
   int imageMode;
   int adcSpeed;
   int triggerMode;
+  int fastExtTrigger;
+  int keepClean;
   int preAmpGain;
   int binX, binY, minX, minY, sizeX, sizeY, reverseX, reverseY, maxSizeX, maxSizeY;
   float acquireTimeAct, acquirePeriodAct, accumulatePeriodAct;
+  float readOutTime, keepCleanTime;
   int FKmode = 4;
   int emGain;
   int emGainMode;
@@ -1247,6 +1264,9 @@ asynStatus AndorCCD::setupAcquisition()
   getIntegerParam(ADTriggerMode, &triggerMode);
   getIntegerParam(AndorAdcSpeed, &adcSpeed);
   pSpeed = &mADCSpeeds[adcSpeed];
+  getIntegerParam(AndorFastExtTrigger, &fastExtTrigger);
+
+  getIntegerParam(AndorKeepClean, &keepClean);
   
   getIntegerParam(AndorPreAmpGain, &preAmpGain);
   
@@ -1277,7 +1297,17 @@ asynStatus AndorCCD::setupAcquisition()
     // If fast triggering is not enabled, the Andor will
     // not accept another trigger until it's "Keep Clean" cycle
     // has been completed.
-    checkStatus(SetFastExtTrigger(1));
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+              "%s:%s:, SetFastExtTrigger(%d)\n",
+              driverName, functionName, fastExtTrigger);
+    checkStatus(SetFastExtTrigger(fastExtTrigger));
+
+    if (readOutMode == ARFullVerticalBinning && triggerMode == ATExternal) {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+                "%s:%s:, EnableKeepCleans(%d)\n",
+                driverName, functionName, keepClean);
+      checkStatus(EnableKeepCleans(keepClean));
+    }
 
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
       "%s:%s:, SetADChannel(%d)\n", 
@@ -1440,8 +1470,20 @@ asynStatus AndorCCD::setupAcquisition()
     setDoubleParam(ADAcquireTime, acquireTimeAct);
     setDoubleParam(ADAcquirePeriod, acquirePeriodAct);
     setDoubleParam(AndorAccumulatePeriod, accumulatePeriodAct);
+    // Read the readout time
+    checkStatus(GetReadOutTime(&readOutTime));
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+              "%s:%s:, GetReadOutTime(readOutTime=%f)\n",
+              driverName, functionName, readOutTime);
+    setDoubleParam(AndorReadOutTime, readOutTime);
+    // Read the keep clean time
+    checkStatus(GetKeepCleanTime(&keepCleanTime));
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+              "%s:%s:, GetKeepCleanTime(keepCleanTime=%f)\n",
+              driverName, functionName, keepCleanTime);
+    setDoubleParam(AndorKeepCleanTime, keepCleanTime);
 
-    
+    checkStatus(SetDMAParameters(1, 0.001));
   } catch (const std::string &e) {
     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
       "%s:%s: %s\n",

@@ -1,23 +1,5 @@
 # Database for estimating XmitDelay for Andor Cameras
 
-record( ao, "$(P)$(R)XmitRateUSB2" )
-{
-	field( DOL,  "60e6" )
-	field( EGU,  "Bytes/Sec" )
-	field( PREC, "3" )
-	field( PINI, "YES" )
-	info( autosaveFields, "VAL" )
-}
-
-record( ao, "$(P)$(R)CamProcDelay" )
-{
-	field( DOL,  "1.2e-4" )
-	field( EGU,  "Sec" )
-	field( PREC, "3" )
-	field( PINI, "YES" )
-	info( autosaveFields, "VAL" )
-}
-
 # XmitDelay for Newton D0940P
 # 0.0001 sec exposure, 0 delay
 #    1 x    1 image, 04.79ms to 09.39ms
@@ -45,27 +27,20 @@ record( ao, "$(P)$(R)CamProcDelay" )
 # each additional row added transmission time for 2048 pixels.
 # Assume ProcDelayPerPixel = ProcDelayPerCol
 # where ProcDelayPerPixel accounts for additional processing delay for each additional pixel.
+# AndorReadOutTime_RBV includes the readout plus transfer time over USB which makes this simple.
 record( calc, "$(P)$(R)XmitDelay" )
 {
-#	field( INPA, "$(P)$(R)MaxSizeX_RBV CP MS" )
-#	field( INPB, "$(P)$(R)MaxSizeY_RBV CP MS" )
-	field( INPA, "$(P)$(R)ArraySizeX_RBV CPP MS" )
-	field( INPB, "$(P)$(R)ArraySizeY_RBV CPP MS" )
-	field( INPC, "$(P)$(R)BitsPerPixel_RBV CPP MS" )
-	field( INPD, "$(P)$(R)DataType_RBV CPP MS" )
-	field( INPE, "$(P)$(R)XmitRateUSB2 CPP MS" )
-	field( INPF, "$(P)$(R)CamProcDelay CPP MS" )
-	field( INPG, "$(P)$(R)ArraySize_RBV CPP MS" )
-	field( INPH, "$(P)$(R)ProcDelayPerPixel CPP MS" )
-	field( CALC, "A*B*(D?4:2)/E+(G*H)" )
+	field( INPA, "$(P)$(R)AndorReadOutTime_RBV CP MS" )
+	field( INPB, "$(P)$(R)ArraySize_RBV CPP MS" )
+	field( INPC, "$(P)$(R)ProcDelayPerPixel CPP MS" )
+	field( CALC, "A+(B*C)")
 	field( EGU,  "Sec" )
 	field( PREC, "5" )
 }
 
 record( ao, "$(P)$(R)ProcDelayPerPixel" )
 {
-#	field( DOL,  "0.493e-6" )
-	field( DOL,  "2.5e-8" )
+	field( DOL,  "4.6e-09" )
 	field( EGU,  "Sec/px" )
 	field( PREC, "5" )
 	field( PINI, "YES" )
@@ -90,7 +65,7 @@ record( ao, "$(P)$(R)DriverProcDelay" )
 record( calc, "$(P)$(R)TrigToTS_Calc" )
 {
 	field( INPA, "$(P)$(R)AcquireTime_RBV CP MS" )
-	field( INPB, "$(P)$(R)XmitDelay CP MS" ) 
+	field( INPB, "$(P)$(R)XmitDelay CP MS" )
 	field( INPC, "$(P)$(R)DriverProcDelay CP MS" )
 	field( CALC, "A+B+C" )
 	field( EGU,  "sec" )

@@ -37,9 +37,13 @@
 #define AndorAdcSpeedString                "ANDOR_ADC_SPEED"
 #define AndorBaselineClampString           "ANDOR_BASELINE_CLAMP"
 #define AndorReadOutModeString             "ANDOR_READOUT_MODE"
+#define AndorReadOutTimeString             "ANDOR_READOUT_TIME"
+#define AndorKeepCleanTimeString           "ANDOR_KEEP_CLEAN_TIME"
 #define AndorFrameTransferModeString       "ANDOR_FT_MODE"
 #define AndorVerticalShiftPeriodString     "ANDOR_VS_PERIOD"
 #define AndorVerticalShiftAmplitudeString  "ANDOR_VS_AMPLITUDE"
+#define AndorFastExtTriggerString          "ANDOR_FAST_EXT_TRIGGER"
+#define AndorKeepCleanString               "ANDOR_KEEP_CLEAN"
 
 /**
  * Structure defining an ADC speed for the ADAndor driver.
@@ -112,9 +116,13 @@ class AndorCCD : public ADDriver {
   int AndorAdcSpeed;
   int AndorBaselineClamp;
   int AndorReadOutMode;
+  int AndorReadOutTime;
+  int AndorKeepCleanTime;
   int AndorFrameTransferMode;
   int AndorVerticalShiftPeriod;
   int AndorVerticalShiftAmplitude;
+  int AndorFastExtTrigger;
+  int AndorKeepClean;
 #define LAST_ANDOR_PARAM AndorVerticalShiftAmplitude
 
  private:
