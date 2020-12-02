@@ -209,6 +209,7 @@ class AndorCCD : public ADDriver {
   epicsEventId dataEvent;
   double mPollingPeriod;
   double mFastPollingPeriod;
+  double mTempPollingPeriod;
   unsigned int mAcquiringData;
   char *mInstallPath;
   bool mExiting;

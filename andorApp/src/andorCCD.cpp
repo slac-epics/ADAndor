@@ -350,6 +350,8 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int cameraSeri
   // Define the polling periods for the status thread.
   mPollingPeriod = 0.2; // seconds
   mFastPollingPeriod = 0.05; // seconds
+  // Define the polling period for the data task temperature reading
+  mTempPollingPeriod = 0.5; // seconds
 
   mAcquiringData = 0;
   
@@ -1538,9 +1540,13 @@ void AndorCCD::dataTask(void)
   int nDims = 2;
   int i;
   epicsTimeStamp startTime;
+  epicsTimeStamp currentTempTime;
+  epicsTimeStamp lastTempTime;
   NDArray *pArray;
   int autoSave;
   int readOutMode;
+  int coolerStatus;
+  float temperature;
   static const char *functionName = "dataTask";
 
   printf("%s:%s: Data thread started...\n", driverName, functionName);
@@ -1665,6 +1671,18 @@ void AndorCCD::dataTask(void)
             // Save the current frame for use with the SPE file writer which needs the data
             if (this->pArrays[0]) this->pArrays[0]->release();
             this->pArrays[0] = pArray;
+          }
+          // Periodically update temperature status
+          epicsTimeGetCurrent(&currentTempTime);
+          if (epicsTimeDiffInSeconds(&currentTempTime, &lastTempTime) > mTempPollingPeriod) {
+            // Read cooler status
+            checkStatus(IsCoolerOn(&coolerStatus));
+            setIntegerParam(AndorCoolerParam, coolerStatus);
+            // Read temperature of CCD
+            checkStatus(GetTemperatureF(&temperature));
+            setDoubleParam(ADTemperatureActual, temperature);
+            // update last temp update time
+            lastTempTime = currentTempTime;
           }
           // Save data if autosave is enabled
           if (autoSave) this->saveDataFrame(i);
