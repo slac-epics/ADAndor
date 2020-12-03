@@ -553,6 +553,7 @@ record(ao, "$(P)$(R)AndorSecondsPerDMA")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_DMA_SECONDS")
    field(PREC, "3")
    field(VAL,  "0.03")
+   field(EGU,  "sec")
    info( autosaveFields, "VAL" )
 }
 
@@ -562,6 +563,7 @@ record(ai, "$(P)$(R)AndorSecondsPerDMA_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_DMA_SECONDS")
    field(PREC, "3")
    field(SCAN, "I/O Intr")
+   field(EGU,  "sec")
 }
 
 
