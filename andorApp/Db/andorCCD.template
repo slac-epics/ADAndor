@@ -503,7 +503,6 @@ record(bo, "$(P)$(R)AndorFastExtTrigger")
 
 record(bi, "$(P)$(R)AndorFastExtTrigger_RBV")
 {
-    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FAST_EXT_TRIGGER")
     field(ZNAM, "Disable")
@@ -513,6 +512,7 @@ record(bi, "$(P)$(R)AndorFastExtTrigger_RBV")
 
 record(bo, "$(P)$(R)AndorKeepClean")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_KEEP_CLEAN")
     field(ZNAM, "Disable")
