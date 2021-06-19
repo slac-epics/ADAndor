@@ -46,6 +46,7 @@
 #define AndorKeepCleanString               "ANDOR_KEEP_CLEAN"
 #define AndorMaxImagesPerDMAString         "ANDOR_DMA_IMAGES"
 #define AndorSecondsPerDMAString           "ANDOR_DMA_SECONDS"
+#define AndorIsolatedCropModeString        "ANDOR_ISOCROP_MODE"
 
 /**
  * Structure defining an ADC speed for the ADAndor driver.
@@ -127,6 +128,7 @@ class AndorCCD : public ADDriver {
   int AndorKeepClean;
   int AndorMaxImagesPerDMA;
   int AndorSecondsPerDMA;
+  int AndorIsolatedCropMode;
 #define LAST_ANDOR_PARAM AndorVerticalShiftAmplitude
 
  private:

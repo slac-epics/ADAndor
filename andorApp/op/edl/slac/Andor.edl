@@ -6,7 +6,7 @@ release 1
 x 677
 y 54
 w 1070
-h 915
+h 940
 font "helvetica-medium-r-18.0"
 ctlFont "helvetica-bold-r-10.0"
 btnFont "helvetica-medium-r-18.0"
@@ -1940,7 +1940,7 @@ major 4
 minor 0
 release 0
 x 147
-y 866
+y 891
 w 100
 h 20
 fgColor index 14
@@ -2058,7 +2058,7 @@ release 0
 x 5
 y 380
 w 350
-h 515
+h 540
 lineColor index 14
 fillColor index 14
 lineWidth 0
@@ -2731,7 +2731,7 @@ major 4
 minor 1
 release 1
 x 47
-y 865
+y 890
 w 90
 h 20
 font "helvetica-medium-r-14.0"
@@ -2751,7 +2751,7 @@ major 4
 minor 7
 release 0
 x 251
-y 866
+y 891
 w 79
 h 18
 controlPv "$(P)$(R)DataType_RBV"
@@ -3815,7 +3815,7 @@ beginObjectProperties
 major 4
 minor 1
 release 1
-x 37
+x 47
 y 840
 w 90
 h 20
@@ -3826,6 +3826,69 @@ bgColor index 3
 useDisplayBg
 value {
   "Keep Clean"
+}
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 147
+y 866
+w 100
+h 20
+fgColor index 14
+bgColor index 63
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)AndorIsolatedCropMode"
+indicatorPv "$(P)$(R)AndorIsolatedCropMode"
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 251
+y 866
+w 80
+h 18
+controlPv "$(P)$(R)AndorIsolatedCropMode_RBV"
+format "string"
+font "helvetica-medium-r-14.0"
+fgColor index 15
+bgColor index 12
+limitsFromDb
+nullColor index 40
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 47
+y 865
+w 90
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Crop Mode"
 }
 endObjectProperties
 

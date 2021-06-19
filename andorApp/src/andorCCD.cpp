@@ -164,6 +164,7 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int cameraSeri
   createParam(AndorKeepCleanString,               asynParamInt32, &AndorKeepClean);
   createParam(AndorMaxImagesPerDMAString,         asynParamInt32, &AndorMaxImagesPerDMA);
   createParam(AndorSecondsPerDMAString,           asynParamFloat64, &AndorSecondsPerDMA);
+  createParam(AndorIsolatedCropModeString,        asynParamInt32, &AndorIsolatedCropMode);
 
 
   // Create the epicsEvent for signaling to the status task when parameters should have changed.
@@ -322,6 +323,7 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int cameraSeri
   status |= setIntegerParam(AndorKeepClean, 1);
   status |= setIntegerParam(AndorMaxImagesPerDMA, 0);
   status |= setDoubleParam(AndorSecondsPerDMA, 0.03);
+  status |= setIntegerParam(AndorIsolatedCropMode, 0);
 
   setupADCSpeeds();
   setupPreAmpGains();
@@ -741,7 +743,7 @@ asynStatus AndorCCD::writeInt32(asynUser *pasynUser, epicsInt32 value)
              (function == AndorReadOutMode) || (function == AndorFrameTransferMode) ||
              (function == AndorKeepClean)   || (function == AndorFastExtTrigger)    ||
              (function == AndorVerticalShiftPeriod) || (function == AndorVerticalShiftAmplitude) ||
-             (function == AndorMaxImagesPerDMA)) {
+             (function == AndorMaxImagesPerDMA) || (function ==AndorIsolatedCropMode)) {
       status = setupAcquisition();
       if (function == AndorAdcSpeed) setupPreAmpGains();
       if (status != asynSuccess) setIntegerParam(function, oldValue);
@@ -1195,6 +1197,7 @@ asynStatus AndorCCD::setupAcquisition()
   int verticalShiftAmplitude;
   int maxImagesPerDMA;
   double secondsPerDMA;
+  int isolatedCropMode;
   static const char *functionName = "setupAcquisition";
   
   if (!mInitOK) {
@@ -1297,6 +1300,8 @@ asynStatus AndorCCD::setupAcquisition()
 
   getDoubleParam(AndorSecondsPerDMA, &secondsPerDMA);
 
+  getIntegerParam(AndorIsolatedCropMode, &isolatedCropMode);
+
   try {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
       "%s:%s:, SetReadMode(%d)\n",
@@ -1352,9 +1357,18 @@ asynStatus AndorCCD::setupAcquisition()
 
     if (readOutMode == ARImage) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-        "%s:%s:, SetImage(%d,%d,%d,%d,%d,%d)\n",
-        driverName, functionName, binX, binY, minX+1, minX+sizeX, minY+1, minY+sizeY);
-      checkStatus(SetImage(binX, binY, minX+1, minX+sizeX, minY+1, minY+sizeY));
+          "%s:%s:, SetIsolatedCropMode(%d,%d,%d,%d,%d)\n",
+          driverName, functionName, isolatedCropMode, minY+sizeY, minX+sizeX, binY, binX);
+      checkStatus(SetIsolatedCropMode(isolatedCropMode, minY+sizeY, minX+sizeX, binY, binX));
+      if (!isolatedCropMode) {
+          asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+          "%s:%s:, SetImage(%d,%d,%d,%d,%d,%d)\n",
+          driverName, functionName, binX, binY, minX+1, minX+sizeX, minY+1, minY+sizeY);
+        checkStatus(SetImage(binX, binY, minX+1, minX+sizeX, minY+1, minY+sizeY));
+      }
+    } else {
+      // crop mode is only supported in Image readout mode
+      setIntegerParam(AndorIsolatedCropMode, 0);
     }
 
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 

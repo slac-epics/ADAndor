@@ -16,5 +16,6 @@ $(P)$(R)AndorFastExtTrigger
 $(P)$(R)AndorKeepClean
 $(P)$(R)AndorMaxImagesPerDMA
 $(P)$(R)AndorSecondsPerDMA
+$(P)$(R)AndorIsolatedCropMode
 file "ADBase_settings.req", P=$(P), R=$(R)
 file "NDFile_settings.req", P=$(P), R=$(R)
