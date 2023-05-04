@@ -1253,8 +1253,10 @@ asynStatus AndorCCD::setupAcquisition()
   getIntegerParam(ADMaxSizeX, &maxSizeX);
   getIntegerParam(ADMaxSizeY, &maxSizeY);
   if (readOutMode == ARFullVerticalBinning) {
-    // Set maximum binning but do not update parameter, this preserves ADBinY
-    // when going back to Image readout mode.
+    // Set maximum binning but do not update parameter, this preserves ADBinY,
+    // ADMinY, and ADSizeY when going back to Image readout mode.
+    minY = 0;
+    sizeY = maxSizeY;
     binY = maxSizeY;
   }
   if (minX > (maxSizeX - binX)) {
