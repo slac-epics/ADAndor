@@ -153,6 +153,7 @@ AndorCCD::AndorCCD(const char *portName, const char *installPath, int cameraSeri
   createParam(AndorEmGainModeString,              asynParamInt32, &AndorEmGainMode);
   createParam(AndorEmGainAdvancedString,          asynParamInt32, &AndorEmGainAdvanced);
   createParam(AndorAdcSpeedString,                asynParamInt32, &AndorAdcSpeed);
+  createParam(AndorHighCapacityString,            asynParamInt32, &AndorHighCapacity);
   createParam(AndorBaselineClampString,           asynParamInt32, &AndorBaselineClamp);
   createParam(AndorReadOutModeString,             asynParamInt32, &AndorReadOutMode);
   createParam(AndorReadOutTimeString,             asynParamFloat64, &AndorReadOutTime);
@@ -743,7 +744,8 @@ asynStatus AndorCCD::writeInt32(asynUser *pasynUser, epicsInt32 value)
              (function == AndorReadOutMode) || (function == AndorFrameTransferMode) ||
              (function == AndorKeepClean)   || (function == AndorFastExtTrigger)    ||
              (function == AndorVerticalShiftPeriod) || (function == AndorVerticalShiftAmplitude) ||
-             (function == AndorMaxImagesPerDMA) || (function ==AndorIsolatedCropMode)) {
+             (function == AndorMaxImagesPerDMA) || (function == AndorIsolatedCropMode) ||
+             (function == AndorHighCapacity) || (function == AndorBaselineClamp)) {
       status = setupAcquisition();
       if (function == AndorAdcSpeed) setupPreAmpGains();
       if (status != asynSuccess) setIntegerParam(function, oldValue);
@@ -775,16 +777,6 @@ asynStatus AndorCCD::writeInt32(asynUser *pasynUser, epicsInt32 value)
              (function == AndorShutterMode) ||
              (function == AndorShutterExTTL)) {
       status = setupShutter(-1);
-    }
-    else if (function == AndorBaselineClamp) {
-      try {
-        checkStatus(SetBaselineClamp(value));
-      } catch (const std::string &e) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-          "%s:%s: %s\n",
-          driverName, functionName, e.c_str());
-        status = asynError;
-      }
     }
     else {
       status = ADDriver::writeInt32(pasynUser, value);
@@ -1198,6 +1190,8 @@ asynStatus AndorCCD::setupAcquisition()
   int maxImagesPerDMA;
   double secondsPerDMA;
   int isolatedCropMode;
+  int highCapacity;
+  int baselineClamp;
   static const char *functionName = "setupAcquisition";
   
   if (!mInitOK) {
@@ -1304,6 +1298,10 @@ asynStatus AndorCCD::setupAcquisition()
 
   getIntegerParam(AndorIsolatedCropMode, &isolatedCropMode);
 
+  getIntegerParam(AndorHighCapacity, &highCapacity);
+
+  getIntegerParam(AndorBaselineClamp, &baselineClamp);
+
   try {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
       "%s:%s:, SetReadMode(%d)\n",
@@ -1341,6 +1339,20 @@ asynStatus AndorCCD::setupAcquisition()
       "%s:%s:, SetOutputAmplifier(%d)\n", 
       driverName, functionName, pSpeed->AmpIndex);
     checkStatus(SetOutputAmplifier(pSpeed->AmpIndex));
+
+    if (mCapabilities.ulSetFunctions & AC_SETFUNCTION_BASELINECLAMP) {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+          "%s:%s:, SetBaselineClamp(%d)\n",
+          driverName, functionName, baselineClamp);
+      checkStatus(SetBaselineClamp(baselineClamp));
+    }
+
+    if (mCapabilities.ulSetFunctions & AC_SETFUNCTION_HIGHCAPACITY) {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+          "%s:%s:, SetHighCapacity(%d)\n",
+          driverName, functionName, highCapacity);
+      checkStatus(SetHighCapacity(highCapacity));
+    }
 
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
       "%s:%s:, SetHSSpeed(%d, %d)\n", 

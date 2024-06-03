@@ -35,6 +35,7 @@
 #define AndorEmGainModeString              "ANDOR_EM_GAIN_MODE"
 #define AndorEmGainAdvancedString          "ANDOR_EM_GAIN_ADVANCED"
 #define AndorAdcSpeedString                "ANDOR_ADC_SPEED"
+#define AndorHighCapacityString            "ANDOR_HIGH_CAPACITY"
 #define AndorBaselineClampString           "ANDOR_BASELINE_CLAMP"
 #define AndorReadOutModeString             "ANDOR_READOUT_MODE"
 #define AndorReadOutTimeString             "ANDOR_READOUT_TIME"
@@ -117,6 +118,7 @@ class AndorCCD : public ADDriver {
   int AndorEmGainMode;
   int AndorEmGainAdvanced;
   int AndorAdcSpeed;
+  int AndorHighCapacity;
   int AndorBaselineClamp;
   int AndorReadOutMode;
   int AndorReadOutTime;
