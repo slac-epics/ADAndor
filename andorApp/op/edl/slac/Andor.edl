@@ -6,7 +6,7 @@ release 1
 x 677
 y 54
 w 1070
-h 940
+h 990
 font "helvetica-medium-r-18.0"
 ctlFont "helvetica-bold-r-10.0"
 btnFont "helvetica-medium-r-18.0"
@@ -23,6 +23,21 @@ showGrid
 snapToGrid
 gridSize 4
 endScreenProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 380
+w 350
+h 590
+lineColor index 14
+fillColor index 14
+lineWidth 0
+endObjectProperties
 
 # (Rectangle)
 object activeRectangleClass
@@ -1940,7 +1955,7 @@ major 4
 minor 0
 release 0
 x 147
-y 891
+y 941
 w 100
 h 20
 fgColor index 14
@@ -2046,21 +2061,6 @@ h 20
 lineColor index 2
 fill
 fillColor index 2
-lineWidth 0
-endObjectProperties
-
-# (Rectangle)
-object activeRectangleClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 5
-y 380
-w 350
-h 540
-lineColor index 14
-fillColor index 14
 lineWidth 0
 endObjectProperties
 
@@ -2731,7 +2731,7 @@ major 4
 minor 1
 release 1
 x 47
-y 890
+y 940
 w 90
 h 20
 font "helvetica-medium-r-14.0"
@@ -2751,7 +2751,7 @@ major 4
 minor 7
 release 0
 x 251
-y 891
+y 941
 w 79
 h 18
 controlPv "$(P)$(R)DataType_RBV"
@@ -3835,7 +3835,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 147
+x 148
 y 866
 w 100
 h 20
@@ -3890,5 +3890,131 @@ useDisplayBg
 value {
   "Crop Mode"
 }
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 17
+y 890
+w 120
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Baseline Clamp"
+}
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 148
+y 891
+w 100
+h 20
+fgColor index 14
+bgColor index 63
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)AndorBaselineClamp"
+indicatorPv "$(P)$(R)AndorBaselineClamp"
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 251
+y 891
+w 80
+h 18
+controlPv "$(P)$(R)AndorBaselineClamp_RBV"
+format "string"
+font "helvetica-medium-r-14.0"
+fgColor index 15
+bgColor index 12
+limitsFromDb
+nullColor index 40
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 17
+y 915
+w 120
+h 20
+font "helvetica-medium-r-14.0"
+fontAlign "right"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "High Capacity"
+}
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 148
+y 916
+w 100
+h 20
+fgColor index 14
+bgColor index 63
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)AndorHighCapacity"
+indicatorPv "$(P)$(R)AndorHighCapacity"
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 251
+y 916
+w 80
+h 18
+controlPv "$(P)$(R)AndorHighCapacity_RBV"
+format "string"
+font "helvetica-medium-r-14.0"
+fgColor index 15
+bgColor index 12
+limitsFromDb
+nullColor index 40
+smartRefresh
+fastUpdate
+newPos
+objType "controls"
 endObjectProperties
 
