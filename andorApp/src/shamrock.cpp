@@ -25,7 +25,7 @@
 #else
 #include "atmcdLXd.h"
 #endif
-#include <ShamrockCIF.h>
+#include <atspectrograph.h>
 
 #include <epicsExport.h>
 
@@ -90,7 +90,7 @@ protected:
 
 private:
     /* Local methods to this class */
-    inline asynStatus checkError(int status, const char *functionName, const char *shamrockFunction);
+    inline asynStatus checkError(eATSpectrographReturnCodes status, const char *functionName, const char *shamrockFunction);
     asynStatus getStatus();
 
     /* Data */
@@ -135,7 +135,8 @@ shamrock::shamrock(const char *portName, int shamrockID, const char *iniPath, in
 {
     static const char *functionName = "shamrock";
     int status;
-    int error;
+    int derror;
+    eATSpectrographReturnCodes error;
     float minWavelength, maxWavelength;
     int numDevices;
     int numGratings;
@@ -157,72 +158,72 @@ shamrock::shamrock(const char *portName, int shamrockID, const char *iniPath, in
     createParam(SRSlitExistsString,      asynParamInt32,     &SRSlitExists_);
     createParam(SRSlitSizeString,         asynParamFloat64,   &SRSlitSize_);
 
-    error = ShamrockInitialize((char *)iniPath);
+    error = ATSpectrographInitialize((char *)iniPath);
 
-    status = checkError(error, functionName, "ShamrockInitialize");
+    status = checkError(error, functionName, "ATSpectrographInitialize");
     if (status) return;
-    error = ShamrockGetNumberDevices(&numDevices);
-    status = checkError(error, functionName, "ShamrockGetNumberDevices");
+    error = ATSpectrographGetNumberDevices(&numDevices);
+    status = checkError(error, functionName, "ATSpectrographGetNumberDevices");
     if (status) return;
     if (numDevices < 1) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s:  No Shamrock spectrographs found, numDevices=%d\n",
+            "%s:%s:  No ATSpectrograph spectrographs found, numDevices=%d\n",
             driverName, functionName, numDevices);
         return;
     }
 
     //Get Detector dimensions
-    error = GetDetector(&width, &height);
-    if (error != DRV_SUCCESS) {
+    derror = GetDetector(&width, &height);
+    if (derror != DRV_SUCCESS) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s:  GetDetector() status = %d\n",
-            driverName, functionName, error);
+            driverName, functionName, derror);
         return;
     }
 
     //Sets the number of pixels for calibration purposes
-    error = ShamrockSetNumberPixels(shamrockId_, width);
-    status = checkError(error, functionName, "ShamrockSetNumberPixels");
+    error = ATSpectrographSetNumberPixels(shamrockId_, width);
+    status = checkError(error, functionName, "ATSpectrographSetNumberPixels");
 
     //Get Detector pixel size
-    error = GetPixelSize(&xSize, &ySize);
-    if (error != DRV_SUCCESS) {
+    derror = GetPixelSize(&xSize, &ySize);
+    if (derror != DRV_SUCCESS) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s:  GetPixelSize() status = %d\n",
-            driverName, functionName, error);
+            driverName, functionName, derror);
         return;
     }
 
     //Set the pixel width in microns for calibration purposes.
-    error = ShamrockSetPixelWidth(shamrockId_, xSize);
-    status = checkError(error, functionName, "ShamrockSetPixelWidth");
+    error = ATSpectrographSetPixelWidth(shamrockId_, xSize);
+    status = checkError(error, functionName, "ATSpectrographSetPixelWidth");
     
     // Determine the number of pixels on the attached CCD and the pixel size
-    error = ShamrockGetNumberPixels(shamrockId_, &numPixels_);
-    status = checkError(error, functionName, "ShamrockGetNumberPixels");
-    error = ShamrockGetPixelWidth(shamrockId_, &pixelWidth);
-    status = checkError(error, functionName, "ShamrockGetPixelWidth");
+    error = ATSpectrographGetNumberPixels(shamrockId_, &numPixels_);
+    status = checkError(error, functionName, "ATSpectrographGetNumberPixels");
+    error = ATSpectrographGetPixelWidth(shamrockId_, &pixelWidth);
+    status = checkError(error, functionName, "ATSpectrographGetPixelWidth");
     calibration_ = (float *)calloc(numPixels_, sizeof(float));
 
     // Determine which slits are present
     for (i=0; i<MAX_SLITS; i++) {
         int present;
-        error = ShamrockAutoSlitIsPresent(shamrockId_, i+1, &present);
-        status = checkError(error, functionName, "ShamrockAutoSlitIsPresent");
+        error = ATSpectrographSlitIsPresent(shamrockId_, static_cast<eATSpectrographSlitIndex>(i+1), &present);
+        status = checkError(error, functionName, "ATSpectrographAutoSlitIsPresent");
         slitIsPresent_[i] = (present == 1);
         setIntegerParam(i, SRSlitExists_, slitIsPresent_[i]);
     }
 
     // Determine how many gratings are present
-    error = ShamrockGetNumberGratings(shamrockId_, &numGratings);
-    status = checkError(error, functionName, "ShamrockGetNumberGratings");
+    error = ATSpectrographGetNumberGratings(shamrockId_, &numGratings);
+    status = checkError(error, functionName, "ATSpectrographGetNumberGratings");
     setIntegerParam(SRNumGratings_, numGratings);
 
     // Get wavelength range of each grating
     for (i=1; i<=numGratings; i++) {
         setIntegerParam(i, SRGratingExists_, 1);
-        error = ShamrockGetWavelengthLimits(shamrockId_, i, &minWavelength, &maxWavelength);
-        status = checkError(error, functionName, "ShamrockGetWavelengthLimits");
+        error = ATSpectrographGetWavelengthLimits(shamrockId_, i, &minWavelength, &maxWavelength);
+        status = checkError(error, functionName, "ATSpectrographGetWavelengthLimits");
         setDoubleParam(i, SRMinWavelength_, minWavelength);
         setDoubleParam(i, SRMaxWavelength_, maxWavelength);
     }
@@ -232,8 +233,8 @@ shamrock::shamrock(const char *portName, int shamrockID, const char *iniPath, in
     
     // Determine which Flipper Mirrors exist
     for (i=0; i<MAX_FLIPPER_MIRRORS; i++) {
-        error = ShamrockFlipperMirrorIsPresent(shamrockId_, i+1, &numFlipperStatus);
-        status = checkError(error, functionName, "ShamrockFlipperMirrorIsPresent");
+        error = ATSpectrographFlipperMirrorIsPresent(shamrockId_, static_cast<eATSpectrographFlipper>(i+1), &numFlipperStatus);
+        status = checkError(error, functionName, "ATSpectrographFlipperMirrorIsPresent");
         flipperMirrorIsPresent_[i] = (numFlipperStatus== 1); 
         setIntegerParam(i, SRFlipperMirrorExists_, flipperMirrorIsPresent_[i]);
     }
@@ -247,10 +248,10 @@ shamrock::shamrock(const char *portName, int shamrockID, const char *iniPath, in
     return;
 }
 
-inline asynStatus shamrock::checkError(int status, const char *functionName, const char *shamrockFunction)
+inline asynStatus shamrock::checkError(eATSpectrographReturnCodes status, const char *functionName, const char *shamrockFunction)
 {
-    if (status != SHAMROCK_SUCCESS) {
-        ShamrockGetFunctionReturnDescription(status, lastError_, sizeof(lastError_));
+    if (status != ATSPECTROGRAPH_SUCCESS) {
+        ATSpectrographGetFunctionReturnDescription(status, lastError_, sizeof(lastError_));
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: ERROR calling %s Description=%s\n",
             driverName, functionName, shamrockFunction, lastError_);
@@ -261,46 +262,46 @@ inline asynStatus shamrock::checkError(int status, const char *functionName, con
 
 asynStatus shamrock::getStatus()
 {
-    int error;
+    eATSpectrographReturnCodes error;
     asynStatus status;
     int grating;
     float wavelength;
     float width;
     int i;
     static const char *functionName = "getStatus";
-    int port;
+    eATSpectrographPortPosition port;
 
     //Get Flipper Status
     for (i=0; i<MAX_FLIPPER_MIRRORS; i++) {
         if (flipperMirrorIsPresent_[i] == 0) continue;
-        error = ShamrockGetFlipperMirror(shamrockId_, i+1, &port);
-        status = checkError(error, functionName, "ShamrockGetFlipperMirror");
+        error = ATSpectrographGetFlipperMirror(shamrockId_, static_cast<eATSpectrographFlipper>(i+1), &port);
+        status = checkError(error, functionName, "ATSpectrographGetFlipperMirror");
         if (status) return asynError;
         setIntegerParam(i, SRFlipperMirrorPort_, port);
     }
 
 
-    error = ShamrockGetGrating(shamrockId_, &grating);
-    status = checkError(error, functionName, "ShamrockGetGrating");
+    error = ATSpectrographGetGrating(shamrockId_, &grating);
+    status = checkError(error, functionName, "ATSpectrographGetGrating");
     if (status) return asynError;
     setIntegerParam(SRGrating_, grating);
     
-    error = ShamrockGetWavelength(shamrockId_, &wavelength);
-    status = checkError(error, functionName, "ShamrockGetWavelength");
+    error = ATSpectrographGetWavelength(shamrockId_, &wavelength);
+    status = checkError(error, functionName, "ATSpectrographGetWavelength");
     if (status) return asynError;
     setDoubleParam(SRWavelength_, wavelength);
 
     for (i=0; i<MAX_SLITS; i++) {
         setDoubleParam(i, SRSlitSize_, 0.);
         if (slitIsPresent_[i] == 0) continue;
-        error = ShamrockGetAutoSlitWidth(shamrockId_, i+1, &width);
-        status = checkError(error, functionName, "ShamrockGetAutoSlitWidth");
+        error = ATSpectrographGetSlitWidth(shamrockId_, static_cast<eATSpectrographSlitIndex>(i+1), &width);
+        status = checkError(error, functionName, "ATSpectrographGetSlitWidth");
         if (status) return asynError;
         setDoubleParam(i, SRSlitSize_, width);
     }
     
-    error = ShamrockGetCalibration(shamrockId_, calibration_, numPixels_);
-    status = checkError(error, functionName, "ShamrockGetCalibration");
+    error = ATSpectrographGetCalibration(shamrockId_, calibration_, numPixels_);
+    status = checkError(error, functionName, "ATSpectrographGetCalibration");
     if (status) return asynError;
     setDoubleParam(0, SRMinWavelength_, calibration_[0]);
     setDoubleParam(0, SRMaxWavelength_, calibration_[numPixels_-1]);
@@ -327,7 +328,7 @@ asynStatus shamrock::getStatus()
 asynStatus shamrock::writeInt32( asynUser *pasynUser, epicsInt32 value)
 {
     asynStatus status = asynSuccess;
-    int error;
+    eATSpectrographReturnCodes error;
     int function = pasynUser->reason;
     int addr;
     static const char *functionName = "writeInt32";
@@ -339,15 +340,15 @@ asynStatus shamrock::writeInt32( asynUser *pasynUser, epicsInt32 value)
     status = setIntegerParam(addr, function, value);
 
     if (function == SRGrating_) {
-        error = ShamrockSetGrating(shamrockId_, value);
-        status = checkError(error, functionName, "ShamrockSetGrating");
+        error = ATSpectrographSetGrating(shamrockId_, value);
+        status = checkError(error, functionName, "ATSpectrographSetGrating");
     }
     
     // Port Information
     else if (function == SRFlipperMirrorPort_) {
         if (flipperMirrorIsPresent_[addr]) {
-            error = ShamrockSetFlipperMirror(shamrockId_, addr+1, value);
-            status = checkError(error, functionName, "ShamrockSetFlipperMirror");
+            error = ATSpectrographSetFlipperMirror(shamrockId_, static_cast<eATSpectrographFlipper>(addr+1), static_cast<eATSpectrographPortPosition>(value));
+            status = checkError(error, functionName, "ATSpectrographSetFlipperMirror");
         }
     }
 
@@ -370,7 +371,7 @@ asynStatus shamrock::writeInt32( asynUser *pasynUser, epicsInt32 value)
 asynStatus shamrock::writeFloat64( asynUser *pasynUser, epicsFloat64 value)
 {
     asynStatus status = asynSuccess;
-    int error;
+    eATSpectrographReturnCodes error;
     int function = pasynUser->reason;
     int addr;
     static const char *functionName = "writeFloat64";
@@ -382,14 +383,14 @@ asynStatus shamrock::writeFloat64( asynUser *pasynUser, epicsFloat64 value)
     status = setDoubleParam(addr, function, value);
 
     if (function == SRWavelength_) {
-        error = ShamrockSetWavelength(shamrockId_, (float) value);
-        status = checkError(error, functionName, "ShamrockSetWavelength");
+        error = ATSpectrographSetWavelength(shamrockId_, (float) value);
+        status = checkError(error, functionName, "ATSpectrographSetWavelength");
     
     } 
     else if (function == SRSlitSize_) {
         if (slitIsPresent_[addr]) {
-          error = ShamrockSetAutoSlitWidth(shamrockId_, addr+1, (float) value);
-          status = checkError(error, functionName, "ShamrockSetSlit");
+          error = ATSpectrographSetSlitWidth(shamrockId_, static_cast<eATSpectrographSlitIndex>(addr+1), (float) value);
+          status = checkError(error, functionName, "ATSpectrographSetSlit");
         }
     }
     
@@ -444,7 +445,7 @@ static const iocshArg * const configArgs[] = {&configArg0,
                                               &configArg2,
                                               &configArg3,
                                               &configArg4};
-static const iocshFuncDef configShamrock = {"shamrockConfig", 5, configArgs};
+static const iocshFuncDef configATSpectrograph = {"shamrockConfig", 5, configArgs};
 static void configCallFunc(const iocshArgBuf *args)
 {
     shamrockConfig(args[0].sval, args[1].ival, args[2].sval, 
@@ -454,7 +455,7 @@ static void configCallFunc(const iocshArgBuf *args)
 
 static void shamrockRegister(void)
 {
-    iocshRegister(&configShamrock, configCallFunc);
+    iocshRegister(&configATSpectrograph, configCallFunc);
 }
 
 extern "C" {

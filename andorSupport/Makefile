@@ -11,7 +11,7 @@ include $(TOP)/configure/CONFIG
 # not recognize .H
 INC += ATMCD32D.h
 INC += atmcdLXd.h
-INC += ShamrockCIF.h
+INC += atspectrograph.h
 
 ifeq (win32-x86, $(findstring win32-x86, $(T_A)))
 LIB_INSTALLS_WIN32    += ../os/win32-x86/atmcd32m.lib
@@ -24,26 +24,26 @@ LIB_INSTALLS_WIN32    += ../os/windows-x64/ShamrockCIFm.lib
 else ifeq (linux-x86_64, $(findstring linux-x86_64, $(T_A)))
 LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so.2
 LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so
-LIB_INSTALLS_Linux += ../os/linux-x86_64/libshamrockcif.so.2
-LIB_INSTALLS_Linux += ../os/linux-x86_64/libshamrockcif.so
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libatspectrograph.so.2
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libatspectrograph.so
 
 else ifeq (rhel6-x86_64, $(findstring rhel6-x86_64, $(T_A)))
 LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so.2
 LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so
-LIB_INSTALLS_Linux += ../os/linux-x86_64/libshamrockcif.so.2
-LIB_INSTALLS_Linux += ../os/linux-x86_64/libshamrockcif.so
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libatspectrograph.so.2
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libatspectrograph.so
 
 else ifeq (rhel7-x86_64, $(findstring rhel7-x86_64, $(T_A)))
 LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so.2
 LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so
-LIB_INSTALLS_Linux += ../os/linux-x86_64/libshamrockcif.so.2
-LIB_INSTALLS_Linux += ../os/linux-x86_64/libshamrockcif.so
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libatspectrograph.so.2
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libatspectrograph.so
 
-else ifeq (linux-x86, $(findstring linux-x86, $(T_A)))
-LIB_INSTALLS_Linux += ../os/linux-x86/libandor.so.2
-LIB_INSTALLS_Linux += ../os/linux-x86/libandor.so
-LIB_INSTALLS_Linux += ../os/linux-x86/libshamrockcif.so.2
-LIB_INSTALLS_Linux += ../os/linux-x86/libshamrockcif.so
+#else ifeq (linux-x86, $(findstring linux-x86, $(T_A)))
+#LIB_INSTALLS_Linux += ../os/linux-x86/libandor.so.2
+#LIB_INSTALLS_Linux += ../os/linux-x86/libandor.so
+#LIB_INSTALLS_Linux += ../os/linux-x86/libshamrockcif.so.2
+#LIB_INSTALLS_Linux += ../os/linux-x86/libshamrockcif.so
 
 endif
 

@@ -263,6 +263,7 @@ unsigned int GetNumberHorizontalSpeeds(int * number);
 unsigned int GetNumberHSSpeeds(int channel, int typ, int * speeds);
 unsigned int GetNumberMissedExternalTriggers(unsigned int first, unsigned int last, unsigned short * arr, unsigned int size);
 unsigned int GetIRIGData(unsigned char * _uc_irigData, unsigned int _ui_index);
+unsigned int GetMetaData(unsigned char * data, unsigned int _ui_index);
 unsigned int GetNumberNewImages(at_32 * first, at_32 * last);
 unsigned int GetNumberPhotonCountingDivisions(at_u32 * noOfDivisions);
 unsigned int GetNumberPreAmpGains(int * noGains);
@@ -329,6 +330,7 @@ unsigned int IsInternalMechanicalShutter(int * InternalShutter);
 unsigned int IsPreAmpGainAvailable(int channel, int amplifier, int index, int pa, int * status);
 unsigned int IsReadoutFlippedByAmplifier(int iAmplifier, int * iFlipped);
 unsigned int IsTriggerModeAvailable(int iTriggerMode);
+unsigned int LoadEEPROM(char * eepromFile);
 unsigned int Merge(const at_32 * arr, at_32 nOrder, at_32 nPoint, at_32 nPixel, float * coeff, at_32 fit, at_32 hbin, at_32 * output, float * start, float * step_Renamed);
 unsigned int OutAuxPort(int port, int state);
 unsigned int PrepareAcquisition();
@@ -351,6 +353,7 @@ unsigned int SetAccumulationCycleTime(float time);
 unsigned int SetAcquisitionMode(int mode);
 unsigned int SetSensorPortMode(int mode);
 unsigned int SelectSensorPort(int port);
+unsigned int SetSizeOfCircularBufferMegaBytes(at_u32 sizeMB);
 unsigned int SelectDualSensorPort(int port);
 unsigned int SetAcquisitionType(int typ);
 unsigned int SetADChannel(int channel);
@@ -440,6 +443,7 @@ unsigned int SetImageRotate(int iRotate);
 unsigned int SetIsolatedCropMode(int active, int cropheight, int cropwidth, int vbin, int hbin);
 unsigned int SetIsolatedCropModeEx(int active, int cropheight, int cropwidth, int vbin, int hbin, int cropleft, int cropbottom);
 unsigned int SetIsolatedCropModeType(int type);
+unsigned int SetKeepCleanMode(int mode);
 unsigned int SetKineticCycleTime(float time);
 unsigned int SetMCPGain(int gain);
 unsigned int SetMCPGating(int gating);
@@ -456,6 +460,7 @@ unsigned int SetNumberKinetics(int number);
 unsigned int SetNumberPrescans(int iNumber);
 unsigned int SetOutputAmplifier(int typ);
 unsigned int SetOverlapMode(int mode);
+// unsigned int SetOverTempEvent(HANDLE tempEvent);
 unsigned int SetPCIMode(int mode, int value);
 unsigned int SetPhotonCounting(int state);
 unsigned int SetPhotonCountingThreshold(at_32 min, at_32 max);
@@ -712,6 +717,8 @@ unsigned int PostProcessDataAveraging(at_32 * pInputImage, at_32 * pOutputImage,
 #define AC_TRIGGERMODE_EXTERNALEXPOSURE 32
 #define AC_TRIGGERMODE_INVERTED 0x40
 #define AC_TRIGGERMODE_EXTERNAL_CHARGESHIFTING 0x80
+#define AC_TRIGGERMODE_EXTERNAL_RISING 0x0100
+#define AC_TRIGGERMODE_EXTERNAL_PURGE 0x0200
 
 // Deprecated for AC_TRIGGERMODE_EXTERNALEXPOSURE
 #define AC_TRIGGERMODE_BULB 32
@@ -745,7 +752,7 @@ unsigned int PostProcessDataAveraging(at_32 * pInputImage, at_32 * pOutputImage,
 #define AC_CAMERATYPE_ALTA 26
 #define AC_CAMERATYPE_ALTAF 27
 #define AC_CAMERATYPE_IKONXL 28
-#define AC_CAMERATYPE_RES1 29
+#define AC_CAMERATYPE_CMOS_GEN2 29
 #define AC_CAMERATYPE_ISTAR_SCMOS 30
 #define AC_CAMERATYPE_IKONLR 31
 
@@ -859,6 +866,7 @@ unsigned int PostProcessDataAveraging(at_32 * pInputImage, at_32 * pOutputImage,
 
 #define AC_FEATURES2_ESD_EVENTS 1
 #define AC_FEATURES2_DUAL_PORT_CONFIGURATION 2
+#define AC_FEATURES2_OVERTEMP_EVENTS 4
 
 #ifdef __cplusplus
 }

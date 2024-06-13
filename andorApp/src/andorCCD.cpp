@@ -31,7 +31,7 @@
 #else
 #include "atmcdLXd.h"
 #endif
-#include "ShamrockCIF.h"
+#include "atspectrograph.h"
 #include "SPEHeader.h"
 
 #include <epicsExport.h>
@@ -1927,12 +1927,12 @@ unsigned int AndorCCD::SaveAsSPE(char *fullFileName)
   // If there is a valid Shamrock spectrometer get the calibration
   int error;
   int numSpectrometers;
-  error = ShamrockGetNumberDevices(&numSpectrometers);
-  if (error != SHAMROCK_SUCCESS) goto noSpectrometers;
+  error = ATSpectrographGetNumberDevices(&numSpectrometers);
+  if (error != ATSPECTROGRAPH_SUCCESS) goto noSpectrometers;
   if (numSpectrometers < 1) goto noSpectrometers;
   if ((mShamrockId < 0) || (mShamrockId > numSpectrometers-1)) goto noSpectrometers;
-  error = ShamrockGetCalibration(mShamrockId, calibration, nx);
-  if (error != SHAMROCK_SUCCESS) {
+  error = ATSpectrographGetCalibration(mShamrockId, calibration, nx);
+  if (error != ATSPECTROGRAPH_SUCCESS) {
     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
       "%s::%s error reading Shamrock spectrometer calibration\n",
       driverName, functionName);
