@@ -39,6 +39,18 @@ LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so
 LIB_INSTALLS_Linux += ../os/linux-x86_64/libatspectrograph.so.2
 LIB_INSTALLS_Linux += ../os/linux-x86_64/libatspectrograph.so
 
+else ifeq (rhel8-x86_64, $(findstring rhel8-x86_64, $(T_A)))
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so.2
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libatspectrograph.so.2
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libatspectrograph.so
+
+else ifeq (rhel9-x86_64, $(findstring rhel9-x86_64, $(T_A)))
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so.2
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libandor.so
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libatspectrograph.so.2
+LIB_INSTALLS_Linux += ../os/linux-x86_64/libatspectrograph.so
+
 #else ifeq (linux-x86, $(findstring linux-x86, $(T_A)))
 #LIB_INSTALLS_Linux += ../os/linux-x86/libandor.so.2
 #LIB_INSTALLS_Linux += ../os/linux-x86/libandor.so
