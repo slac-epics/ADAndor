@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 501
-y 43
+x 635
+y 1241
 w 400
 h 340
 font "helvetica-medium-r-12.0"
@@ -59,81 +59,6 @@ propagateMacros {
 icon
 endObjectProperties
 
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 0
-y 220
-w 176
-h 24
-
-beginGroup
-
-# (Related Display)
-object relatedDisplayClass
-beginObjectProperties
-major 4
-minor 4
-release 0
-x 0
-y 220
-w 176
-h 24
-fgColor index 14
-bgColor index 3
-topShadowColor index 0
-botShadowColor index 14
-font "helvetica-medium-r-12.0"
-buttonLabel "        Model Specific        "
-numPvs 4
-numDsps 1
-displayFileName {
-  0 "andorScreens/camModel.edl"
-}
-setPosition {
-  0 "button"
-}
-symbols {
-  0 "P=$(P),R=$(R),IOC=$(IOC),EVR=$(EVR),CAM=$(CAM)"
-}
-replaceSymbols {
-  0 1
-}
-propagateMacros {
-  0 0
-}
-icon
-endObjectProperties
-
-# (Text Monitor)
-object activeXTextDspClass:noedit
-beginObjectProperties
-major 4
-minor 7
-release 0
-x 22
-y 224
-w 152
-h 16
-controlPv "$(P)$(R)CamModel"
-font "helvetica-medium-r-12.0"
-fontAlign "center"
-fgColor index 14
-bgColor index 3
-limitsFromDb
-nullColor index 0
-useHexPrefix
-newPos
-objType "monitors"
-endObjectProperties
-
-endGroup
-
-endObjectProperties
-
 # (Text Monitor)
 object activeXTextDspClass:noedit
 beginObjectProperties
@@ -180,7 +105,7 @@ major 4
 minor 0
 release 0
 x 0
-y 252
+y 220
 w 176
 h 24
 
@@ -193,7 +118,7 @@ major 4
 minor 4
 release 0
 x 0
-y 252
+y 220
 w 176
 h 24
 fgColor index 14
@@ -229,7 +154,7 @@ major 4
 minor 7
 release 0
 x 22
-y 256
+y 224
 w 152
 h 16
 controlPv "$(P)$(R)CamModel"
